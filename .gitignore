@@ -1,0 +1,13 @@
+# Python/Django-specific files
+env/
+__pycache__/
+*.pyc
+*.pyo
+
+# Node.js/React-specific files
+node_modules/
+build/
+dist/
+
+# Common editor files
+.idea/
