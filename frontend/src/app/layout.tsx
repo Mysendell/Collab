@@ -30,6 +30,7 @@ async function fetchUsername(): Promise<string> {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
         const json: User = await response.json();
+        console.log(json.username)
         return json.username;
     } catch (err) {
         console.error("Failed to fetch username:", err);

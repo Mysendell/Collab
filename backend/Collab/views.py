@@ -3,7 +3,7 @@ import json
 from django.contrib.auth.hashers import check_password, make_password
 from django.http import JsonResponse
 
-from frontend.models import User
+from backend.Collab.models import User
 
 
 def return_username(request):
@@ -33,7 +33,10 @@ def validate_login(request):
         return JsonResponse({"error": "User does not exist"}, status=404)
 
 def register(request):
-    data = json.loads(request.body)
+    try:
+        data = json.loads(request.body)
+    except json.JSONDecodeError:
+        return JsonResponse({"error": "Invalid JSON"}, status=400)
     username = data.get('username')
     password = data.get('password')
 
