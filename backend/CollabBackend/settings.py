@@ -35,7 +35,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'backend.Collab',
+    'backend.Collab.apps.CollabConfig',
     'corsheaders',
 ]
 
@@ -53,6 +53,10 @@ MIDDLEWARE = [
 CORS_ALLOW_CREDENTIALS = True
 
 CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+]
+
+CSRF_TRUSTED_ORIGINS = [
     "http://localhost:3000",
 ]
 
@@ -110,7 +114,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'GMT'
 
 USE_I18N = True
 
@@ -125,3 +129,9 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+
+SESSION_COOKIE_AGE = 60 * 60 * 24 * 7
+
+SESSION_SAVE_EVERY_REQUEST = True

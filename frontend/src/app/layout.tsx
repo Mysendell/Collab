@@ -19,18 +19,22 @@ export const metadata = {
 };
 
 // Simulates fetching username from an API
-async function fetchUsername(): Promise<string> {
+async function fetchUsername(): Promise<Promise<string> | Promise<boolean>> {
     interface User {
-        username: string;
+        username: string | boolean;
     }
 
     try {
-        const response = await fetch("http://localhost:8000/api/username");
+        const response = await fetch("http://localhost:8000/api/username",
+            {
+                method: "GET",
+                credentials: "include"
+            });
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
         const json: User = await response.json();
-        console.log(json.username)
+        console.log(json);
         return json.username;
     } catch (err) {
         console.error("Failed to fetch username:", err);

@@ -1,37 +1,68 @@
 "use client"
 
+import {useRef, useEffect} from "react";
 import register from "@/app/user/register/register";
 import Link from "next/link";
+import login from "@/app/user/login/login";
+import {router} from "next/client";
 
 export default function Page() {
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    const usernameRef = useRef<HTMLInputElement>(null);
+    const usernameDivRef = useRef<HTMLDivElement>(null);
+    const passwordDivRef = useRef<HTMLDivElement>(null);
+    const password1Ref = useRef<HTMLInputElement>(null);
+    const password2Ref = useRef<HTMLInputElement>(null);
+
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
         const formData = new FormData(event.currentTarget);
         const username = formData.get("username") as string;
         const password = formData.get("password") as string;
         const passwordConfirmation = formData.get("passwordConfirmation") as string;
+
+        password1Ref.current!.classList.remove("border-red-500");
+        password2Ref.current!.classList.remove("border-red-500");
+        passwordDivRef.current!.innerText = "​";
+        usernameRef.current!.classList.remove("border-red-500");
+        usernameDivRef.current!.innerText = "​";
+
         if (password !== passwordConfirmation) {
-            alert("Passwords do not match");
+            password1Ref.current!.classList.add("border-red-500");
+            password2Ref.current!.classList.add("border-red-500");
+            passwordDivRef.current!.innerText = "Passwords do not match.";
             return;
         }
+        var response: string = await register(username, password);
+        if (response === "Username already exists.") {
+            usernameRef.current!.classList.add("border-red-500");
+            usernameDivRef.current!.innerText = response;
+        }
+        if(response === ""){
+            await login(username, password);
+            await router.push('/dashboard'); // Redirect to the dashboard or any other route
+        }
 
-        register(username, password);
     };
 
     return <div>
         <form className={"grid grid-cols-1 gap-4"} onSubmit={handleSubmit}>
             <label htmlFor={"username"}>Username: </label>
-            <input
-                id={"username"} name="username" type="text" placeholder="Username" className={"pl-2 text-background"}/>
+            <input id={"username"} name="username" type="text" placeholder="Username"
+                   className={"pl-2 text-background border-2"} ref={usernameRef}/>
+            <div ref={usernameDivRef} className={"h-3 text-red-500"}>​</div>
             <label htmlFor={"password"}>Password: </label>
-            <input
-                id={"password"} name="password" type="password" placeholder="Password" className={"pl-2 text-background"}/>
+            <input ref={password1Ref}
+                id={"password"} name="password" type="password" placeholder="Password"
+                className={"pl-2 text-background border-2"}/>
             <label htmlFor={"passwordConfirmation"}>Confirm password: </label>
-            <input
-                id={"passwordConfirmation"} name="passwordConfirmation" type="password" placeholder="Confirm Password" className={"pl-2 text-background"}/>
+            <input ref={password2Ref}
+                id={"passwordConfirmation"} name="passwordConfirmation" type="password" placeholder="Confirm Password"
+                className={"pl-2 text-background border-2"}/>
+            <div ref={passwordDivRef} className={"h-3 text-red-500"}>​</div>
             <button type="submit" className={"bg-violet text-white"}>Register</button>
         </form>
-        <p className={"scale-75"}>Already have an account? <Link className="underline hover:text-violet" href={"../user/login"}>Login</Link></p>
+        <p className={"scale-75"}>Already have an account? <Link className="underline hover:text-violet"
+                                                                 href={"../user/login"}>Login</Link></p>
     </div>
 }

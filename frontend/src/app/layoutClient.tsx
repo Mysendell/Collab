@@ -7,11 +7,14 @@ export default function ClientRootLayout({
                                              username,
                                              children,
                                          }: {
-    username: string;
+    username: string | boolean;
     children: React.ReactNode;
 }) {
     const [menuOpen, setMenuOpen] = useState(false);
-    const isLoggedin : boolean = username !== "Not Logged in";
+    const isLoggedin : boolean = username !== false;
+    if(username === false){
+        username = "Not logged in";
+    }
     const handleMenuToggle = () => {
         setMenuOpen((prev) => !prev);
     };
