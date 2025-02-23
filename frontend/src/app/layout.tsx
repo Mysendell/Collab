@@ -18,41 +18,16 @@ export const metadata = {
     description: "Collab is a forum to share knowledge and ideas with others.",
 };
 
-// Simulates fetching username from an API
-async function fetchUsername(): Promise<Promise<string> | Promise<boolean>> {
-    interface User {
-        username: string | boolean;
-    }
-
-    try {
-        const response = await fetch("http://localhost:8000/api/username",
-            {
-                method: "GET",
-                credentials: "include"
-            });
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        const json: User = await response.json();
-        console.log(json);
-        return json.username;
-    } catch (err) {
-        console.error("Failed to fetch username:", err);
-        return "Not logged in";
-    }
-}
-
 export default async function RootLayout({
                                              children,
                                          }: {
     children: React.ReactNode;
 }) {
-    const username = await fetchUsername();
 
     return (
         <html lang="en">
         <body className={`${geistSans.variable} ${geistMono.variable} antialiased` } style={{height: "100vh"}}>
-        <ClientRootLayout username={username}>{children}</ClientRootLayout>
+        <ClientRootLayout>{children}</ClientRootLayout>
         </body>
         </html>
     );

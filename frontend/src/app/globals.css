@@ -17,6 +17,7 @@
     :root {
         --background: var(--magnolia);
         --foreground: var(--rich-black);
+        --detail: var(--periwinkle);
     }
 }
 
@@ -24,6 +25,7 @@
     :root {
         --background: var(--rich-black);
         --foreground: var(--pale-purple);
+        --detail: var(--periwinkle)
     }
 }
 

@@ -12,6 +12,8 @@ export default {
         background: "var(--background)",
         foreground: "var(--foreground)",
         violet: "var(--violet-jtc)",
+        detail: "var(--detail)",
+        palePurple: "var(--pale-purple)",
       },
     },
   },
