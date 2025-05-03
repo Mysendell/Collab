@@ -1,7 +1,7 @@
 import ClientRootLayout from "./layoutClient";
-import { Geist, Geist_Mono } from "next/font/google";
+import {Geist, Geist_Mono} from "next/font/google";
 import "./globals.css";
-import Link from "next/link";
+import {UserProvider} from "@/app/UserContext";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -26,8 +26,10 @@ export default async function RootLayout({
 
     return (
         <html lang="en">
-        <body className={`${geistSans.variable} ${geistMono.variable} antialiased` } style={{height: "100vh"}}>
-        <ClientRootLayout>{children}</ClientRootLayout>
+        <body className={`${geistSans.variable} ${geistMono.variable} antialiased`} style={{height: "100vh"}}>
+        <UserProvider value={{}}>
+            <ClientRootLayout>{children}</ClientRootLayout>
+        </UserProvider>
         </body>
         </html>
     );

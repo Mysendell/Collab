@@ -4,8 +4,12 @@ import login from "@/app/user/login/login";
 import Link from "next/link";
 import { useRouter } from 'next/navigation'
 import {useRef} from "react";
+import {useUser} from "@/app/UserContext";
+import fetchData, {FetchUsername} from "@/app/fetchData";
 
 export default function Page() {
+    const {updateUserData} = useUser();
+
     const router = useRouter();
     const passwordRef = useRef<HTMLInputElement>(null);
     const usernameRef = useRef<HTMLInputElement>(null);
@@ -44,6 +48,18 @@ export default function Page() {
 
         switch (response) {
             case "successfully logged in":
+                const loggedInUsername: string = await FetchUsername();
+                if (loggedInUsername != "Not Logged in") {
+                    const fetchedData = await fetchData(loggedInUsername);
+                    if (fetchedData) {
+                        updateUserData({
+                            username: fetchedData.username,
+                            description: fetchedData.description,
+                            profilePicture: fetchedData.profilePicture,
+                            bannerPicture: fetchedData.bannerPicture,
+                        });
+                    }
+                }
                 router.push('/user/dashboard');
                 break;
             case "Already logged in":

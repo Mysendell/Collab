@@ -1,10 +1,12 @@
+import {getCsrfTokenFromCookie} from "@/app/Utility";
+
 export async function uploadProfilePicture(file: File) : Promise<string> {
     try {
         let csrfToken : string | null = getCsrfTokenFromCookie();
 
         const formData = new FormData();
         formData.append("profilePicture", file);
-        const response = await fetch("http://localhost:8000/api/profilePicture", {
+        const response = await fetch("http://localhost:8000/api/user/profilePicture", {
             method: "POST",
             headers: {
                 ...(csrfToken && {"X-CSRFToken": csrfToken}),
@@ -29,7 +31,7 @@ export async function uploadBannerPicture(file: File) : Promise<string> {
 
         const formData = new FormData();
         formData.append("bannerPicture", file);
-        const response = await fetch("http://localhost:8000/api/bannerPicture", {
+        const response = await fetch("http://localhost:8000/api/user/bannerPicture", {
             method: "POST",
             headers: {
                 ...(csrfToken && {"X-CSRFToken": csrfToken}),
@@ -51,7 +53,7 @@ export async function uploadBannerPicture(file: File) : Promise<string> {
 export async function updateDescription(newDescription: string): Promise<void> {
     try {
         let csrfToken: string | null = getCsrfTokenFromCookie();
-        const response = await fetch("http://localhost:8000/api/description", {
+        const response = await fetch("http://localhost:8000/api/user/description", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -67,21 +69,4 @@ export async function updateDescription(newDescription: string): Promise<void> {
     } catch (error) {
         console.error("Error updating description:", error);
     }
-}
-
-function getCsrfTokenFromCookie(): string | null {
-    let cookieValue = null;
-    const name: string = "csrftoken";
-    if (document.cookie && document.cookie !== '') {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            if (cookie.startsWith(name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-        }
-    }
-    return cookieValue;
-
 }

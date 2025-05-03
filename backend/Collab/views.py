@@ -9,14 +9,15 @@ from backend.Collab.models import User
 
 def return_username(request):
     username = request.session.get("username")
+    print(request.session.get("username"))
     if not username or not User.objects.filter(username=username).exists():
-        return JsonResponse({"username": False})
+        return JsonResponse({"username": "Not Logged in"})
     return JsonResponse({"username": username})
 
 
 def login(request, user_id):
-    if (request.session.get("username") is not None):
-        return JsonResponse({"message": "Already logged in"}, status=400)
+    if request.session.get("username") is not None:
+        return JsonResponse({"message": "Already logged in"}, status=401)
     user = User.objects.get(id=user_id)
     username = user.username
     response = JsonResponse({"message": "Login successful"})
@@ -51,7 +52,7 @@ def validate_login(request):
             return JsonResponse({"message": "Invalid password"}, status=401)
 
     except User.DoesNotExist:
-        return JsonResponse({"message": ""}, status=404)
+        return JsonResponse({"message": "User does not exist"}, status=404)
 
 
 def register(request):
@@ -72,17 +73,17 @@ def register(request):
 
     user = User.objects.create(username=username, password=hashed_password)
     user.save()
-    return login(request, user.id)
+    return JsonResponse({"message": "Registration successful"})
 
 
 def get_user_data(request):
-    username = request.session.get("username")
+    username = request.GET.get("username")
     if not username:
-        return JsonResponse({"error": "Not logged in"}, status=401)
+        return JsonResponse({"error": "Not username provided"}, status=400)
     user = User.objects.get(username=username)
     return JsonResponse(
         {"username": user.username, "description": user.description, "profilePicture": user.profilePicture.url,
-         "bannerPicture": user.bannerPicture.url, "isAdmin": user.is_admin})
+         "bannerPicture": user.bannerPicture.url})
 
 
 def upload_profile_picture(request):
@@ -120,3 +121,9 @@ def update_description(request):
     except json.JSONDecodeError:
         return JsonResponse({"error": "Invalid JSON"}, status=400)
 
+def is_admin(request):
+    username = request.GET.get("username")
+    if not username:
+        return JsonResponse({"error": "no username passed"}, status=400)
+    user = User.objects.get(username=username)
+    return JsonResponse({"is_admin": user.is_admin})

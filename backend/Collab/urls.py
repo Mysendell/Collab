@@ -12,4 +12,5 @@ urlpatterns = [
     path('profilePicture', views.upload_profile_picture, name='upload_profile_picture'),
     path('bannerPicture', views.upload_banner_picture, name='upload_banner_picture'),
     path('description', views.update_description, name='update_description'),
+    path('admin', views.is_admin, name='is_admin'),
 ]

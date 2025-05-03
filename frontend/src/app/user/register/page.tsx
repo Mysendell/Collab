@@ -5,8 +5,12 @@ import register from "@/app/user/register/register";
 import Link from "next/link";
 import login from "@/app/user/login/login";
 import {useRouter} from "next/navigation";
+import {useUser} from "@/app/UserContext";
+import fetchData, {FetchUsername} from "@/app/fetchData";
 
 export default function Page() {
+    const {updateUserData} = useUser();
+
     const router = useRouter();
 
     const usernameRef = useRef<HTMLInputElement>(null);
@@ -109,6 +113,18 @@ export default function Page() {
             }
             if (response === "") {
                 await login(username, password);
+                const loggedInUsername: string = await FetchUsername();
+                if (loggedInUsername != "Not Logged in") {
+                    const fetchedData = await fetchData(loggedInUsername);
+                    if (fetchedData) {
+                        updateUserData({
+                            username: fetchedData.username,
+                            description: fetchedData.description,
+                            profilePicture: fetchedData.profilePicture,
+                            bannerPicture: fetchedData.bannerPicture,
+                        });
+                    }
+                }
                 router.push('/user/dashboard'); // Redirect to the dashboard or any other route
             }
 
@@ -116,7 +132,7 @@ export default function Page() {
     ;
 
     return <div className={"flex gap-5 items-center justify-between"}>
-        <form className={"grid grid-cols-1 gap-4 w-[30rem]"} onSubmit={handleSubmit}>
+        <form className={"grid grid-cols-1 gap-4 w-[50rem]"} onSubmit={handleSubmit}>
             <label htmlFor={"username"}>Username: </label>
             <input id={"username"} name="username" type="text" placeholder="Username"
                    className={"pl-2 text-background border-2"} ref={usernameRef}/>
@@ -130,7 +146,7 @@ export default function Page() {
                    id={"passwordConfirmation"} name="passwordConfirmation" type="password"
                    placeholder="Confirm Password"
                    className={"pl-2 text-background border-2"}/>
-            <div ref={passwordDivRef} className={"h-3 text-red-500"}>​</div>
+            <div ref={passwordDivRef} className={"h-12 text-red-500"}>​</div>
             <button type="submit" className={"bg-violet text-white"}>Register</button>
             <p className={"scale-75"}>Already have an account? <Link className="underline hover:text-violet"
                                                                      href={"../user/login"}>Login</Link></p>
